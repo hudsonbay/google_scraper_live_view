@@ -17,7 +17,7 @@ defmodule GoogleScraperWeb.Router do
   scope "/", GoogleScraperWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
+    live "/", HomepageLive.Index, :index
   end
 
   # Other scopes may use custom stacks.

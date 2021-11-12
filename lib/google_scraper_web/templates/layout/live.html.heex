@@ -1,11 +1,16 @@
-<main class="container">
-  <p class="alert alert-info" role="alert"
-    phx-click="lv:clear-flash"
-    phx-value-key="info"><%= live_flash(@flash, :info) %></p>
-
-  <p class="alert alert-danger" role="alert"
-    phx-click="lv:clear-flash"
-    phx-value-key="error"><%= live_flash(@flash, :error) %></p>
-
-  <%= @inner_content %>
+<main>
+  <div class="container mx-auto h-screen">
+    <div class="text-center px-3 lg:px-0">
+      <h1 class="my-4 text-2xl md:text-3xl lg:text-5xl font-black leading-tight">
+        Google web scraper
+      </h1>
+      <p class="leading-normal text-gray-800 text-base md:text-xl lg:text-2xl mb-8">
+        Import a CSV with keywords from the project structure 📂.
+      </p>
+      <p class="leading-normal text-gray-800 text-base md:text-xl lg:text-2xl mb-8">
+        It will search them on Google 🧐 and show results on the <b>table</b> and also into the <b>database</b>.
+      </p>
+    </div>
+    <%= @inner_content %>
+  </div>
 </main>
