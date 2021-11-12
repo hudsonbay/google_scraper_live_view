@@ -10,6 +10,9 @@
     <script defer phx-track-static type="text/javascript" src={Routes.static_path(@conn, "/assets/app.js")}></script>
   </head>
   <body class="gradient leading-relaxed tracking-wide flex flex-col">
+    <nav>
+      <%= render "_user_menu.html", assigns %>
+    </nav>
     <%= @inner_content %>
   </body>
 </html>
