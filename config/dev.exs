@@ -63,7 +63,7 @@ config :google_scraper, GoogleScraperWeb.Endpoint,
 config :google_scraper, GoogleScraperWeb.Endpoint,
   live_reload: [
     patterns: [
-      ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
+      ~r"priv/static/[^uploads].*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
       ~r"lib/google_scraper_web/(live|views)/.*(ex)$",
       ~r"lib/google_scraper_web/templates/.*(eex)$"
