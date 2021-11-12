@@ -4,7 +4,7 @@
 
 @import "tailwindcss/utilities";
 
-@import "./components/navbar.css";
+/* @import "./components/navbar.css"; */
 
 /* Alerts and form errors used by phx.new */
 .alert {
