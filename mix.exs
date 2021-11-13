@@ -52,7 +52,8 @@ defmodule GoogleScraper.MixProject do
       {:plug_cowboy, "~> 2.5"},
       {:csv, "~> 2.4"},
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
-      {:mix_test_watch, "~> 1.0", only: :dev, runtime: false}
+      {:mix_test_watch, "~> 1.0", only: :dev, runtime: false},
+      {:crawly, "~> 0.13.0"}
     ]
   end
 
