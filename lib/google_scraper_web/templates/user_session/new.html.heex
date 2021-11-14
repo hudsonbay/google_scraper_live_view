@@ -1,7 +1,9 @@
-<div class="min-h-screen bg-gray-100 flex flex-col justify-center sm:py-12">
+  <div class="container mx-auto h-screen">
+
+  <div class="container mx-auto flex flex-wrap pt-4 pb-12">
   <div class="p-10 xs:p-0 mx-auto md:w-full md:max-w-md">
     <%# <h1 class="font-bold text-center text-2xl mb-5">Login</h1> %>
-      <.form let={f} for={@conn} action={Routes.user_session_path(@conn, :create)} as={:user}>
+      <.form class let={f} for={@conn} action={Routes.user_session_path(@conn, :create)} as={:user}>
         <%= if @error_message do %>
           <div class="alert alert-danger">
             <p>
@@ -42,5 +44,8 @@
               </div>
             </div>
       </.form>
-  </div>
+
 </div>
+  </div>
+  </div>
+
