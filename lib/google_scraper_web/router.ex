@@ -18,14 +18,7 @@ defmodule GoogleScraperWeb.Router do
   end
 
   scope "/", GoogleScraperWeb do
-    pipe_through :browser
-
-    # live "/", HomepageLive.Index, :index
-  end
-
-  scope "/", GoogleScraperWeb do
     pipe_through [:browser, :require_authenticated_user]
-
 
     live "/", HomepageLive.Index, :index
   end
