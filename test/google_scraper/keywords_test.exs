@@ -8,7 +8,13 @@ defmodule GoogleScraper.KeywordsTest do
 
     import GoogleScraper.KeywordsFixtures
 
-    @invalid_attrs %{html_content: nil, name: nil, total_advertisers: nil, total_links: nil, total_results: nil}
+    @invalid_attrs %{
+      html_content: nil,
+      name: nil,
+      total_advertisers: nil,
+      total_links: nil,
+      total_results: nil
+    }
 
     test "list_keywords/0 returns all keywords" do
       keyword = keyword_fixture()
@@ -21,14 +27,20 @@ defmodule GoogleScraper.KeywordsTest do
     end
 
     test "create_keyword/1 with valid data creates a keyword" do
-      valid_attrs = %{html_content: "some html_content", name: "some name", total_advertisers: 42, total_links: 42, total_results: 42}
+      valid_attrs = %{
+        html_content: "some html_content",
+        name: "some name",
+        total_advertisers: 42,
+        total_links: 42,
+        total_results: "Cerca de 923,000 resultados (0.54 segundos)"
+      }
 
       assert {:ok, %Keyword{} = keyword} = Keywords.create_keyword(valid_attrs)
       assert keyword.html_content == "some html_content"
       assert keyword.name == "some name"
       assert keyword.total_advertisers == 42
       assert keyword.total_links == 42
-      assert keyword.total_results == 42
+      assert keyword.total_results == "Cerca de 923,000 resultados (0.54 segundos)"
     end
 
     test "create_keyword/1 with invalid data returns error changeset" do
@@ -37,14 +49,21 @@ defmodule GoogleScraper.KeywordsTest do
 
     test "update_keyword/2 with valid data updates the keyword" do
       keyword = keyword_fixture()
-      update_attrs = %{html_content: "some updated html_content", name: "some updated name", total_advertisers: 43, total_links: 43, total_results: 43}
+
+      update_attrs = %{
+        html_content: "some updated html_content",
+        name: "some updated name",
+        total_advertisers: 43,
+        total_links: 43,
+        total_results: "Cerca de 923,000 resultados (0.54 segundos)"
+      }
 
       assert {:ok, %Keyword{} = keyword} = Keywords.update_keyword(keyword, update_attrs)
       assert keyword.html_content == "some updated html_content"
       assert keyword.name == "some updated name"
       assert keyword.total_advertisers == 43
       assert keyword.total_links == 43
-      assert keyword.total_results == 43
+      assert keyword.total_results == "Cerca de 923,000 resultados (0.54 segundos)"
     end
 
     test "update_keyword/2 with invalid data returns error changeset" do

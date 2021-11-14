@@ -7,7 +7,7 @@ defmodule GoogleScraper.Keywords.Keyword do
     field :name, :string
     field :total_advertisers, :integer
     field :total_links, :integer
-    field :total_results, :integer
+    field :total_results, :string
 
     timestamps()
   end
