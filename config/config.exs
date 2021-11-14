@@ -46,6 +46,22 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+config :crawly,
+  closespider_timeout: 10,
+  concurrent_requests_per_domain: 8,
+  middlewares: [
+    Crawly.Middlewares.UniqueRequest,
+    {Crawly.Middlewares.UserAgent,
+     user_agents: [
+       "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36"
+     ]}
+  ],
+  pipelines: [
+    {Crawly.Pipelines.Validate, fields: [:title, :link, :description]},
+    Crawly.Pipelines.JSONEncoder,
+    {Crawly.Pipelines.WriteToFile, extension: "json", folder: "/tmp"}
+  ]
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"
