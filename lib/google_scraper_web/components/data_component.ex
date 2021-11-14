@@ -17,9 +17,9 @@ defmodule DataComponent do
             <%= for keyword <- @keywords do %>
             <tr class="bg-emerald-200">
               <td class="border"><%= keyword.name %></td>
-              <td class="border"><%= keyword.branch_id %></td>
-              <td class="border"><%= keyword.part_price %></td>
-              <td class="border"><%= keyword.short_desc %></td>
+              <td class="border"><%= keyword.total_advertisers %></td>
+              <td class="border"><%= keyword.total_links %></td>
+              <td class="border"><%= keyword.total_results %></td>
             </tr>
             <% end %>
             </tbody>
