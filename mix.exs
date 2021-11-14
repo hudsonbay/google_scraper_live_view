@@ -41,7 +41,7 @@ defmodule GoogleScraper.MixProject do
       {:phoenix_html, "~> 3.0"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:phoenix_live_view, "~> 0.16.0"},
-      {:floki, ">= 0.30.0", only: :test},
+      {:floki, ">= 0.30.0"},
       {:phoenix_live_dashboard, "~> 0.5"},
       {:esbuild, "~> 0.2", runtime: Mix.env() == :dev},
       {:swoosh, "~> 1.3"},
@@ -53,7 +53,8 @@ defmodule GoogleScraper.MixProject do
       {:csv, "~> 2.4"},
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
       {:mix_test_watch, "~> 1.0", only: :dev, runtime: false},
-      {:crawly, "~> 0.13.0"}
+      {:crawly, "~> 0.13.0"},
+      {:codepagex, "~> 0.1.6"}
     ]
   end
 
