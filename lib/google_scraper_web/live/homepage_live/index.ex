@@ -2,6 +2,8 @@ defmodule GoogleScraperWeb.HomepageLive.Index do
   use GoogleScraperWeb, :live_view
 
   alias GoogleScraper.Keywords
+  alias GoogleScraper.Spider.Google
+  alias GoogleScraper.Keywords.Keyword
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
@@ -13,12 +15,17 @@ defmodule GoogleScraperWeb.HomepageLive.Index do
 
   @impl Phoenix.LiveView
   def handle_event("save", _params, socket) do
-    consume_uploaded_entries(socket, :csv, fn meta, entry ->
-      dest = Path.join("priv/static/uploads", "#{entry.uuid}.csv")
-      File.cp!(meta.path, dest)
-      contents = read_csv(dest)
-      # Repo.insert_all(Branch, contents)
-    end)
+    contents =
+      consume_uploaded_entries(socket, :csv, fn meta, entry ->
+        dest = Path.join("priv/static/uploads", "#{entry.uuid}.csv")
+        File.cp!(meta.path, dest)
+        read_csv(dest)
+      end)
+      |> List.flatten()
+
+    results = Google.fetch_results(contents)
+
+    Keywords.bulk_create_keywords(Keyword, results)
 
     {:noreply, assign(socket, keywords: Keywords.list_keywords())}
   end
@@ -33,7 +40,5 @@ defmodule GoogleScraperWeb.HomepageLive.Index do
     |> File.stream!()
     |> CSV.decode()
     |> Enum.map(fn {:ok, keyword} -> keyword end)
-    |> List.flatten()
-    |> IO.inspect(label: "keyword list")
   end
 end
