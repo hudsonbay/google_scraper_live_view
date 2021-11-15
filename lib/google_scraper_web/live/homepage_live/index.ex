@@ -2,16 +2,18 @@ defmodule GoogleScraperWeb.HomepageLive.Index do
   use GoogleScraperWeb, :live_view
 
   alias GoogleScraper.Keywords
-  alias GoogleScraper.Spider.Google
-  alias GoogleScraper.Keywords.Keyword
 
   @impl Phoenix.LiveView
-  def mount(_params, _session, socket) do
+  def mount(_params, session, socket) do
+    user = GoogleScraper.Accounts.get_user_by_session_token(session["user_token"])
+
     {:ok,
      socket
      |> assign(
        keyword: "",
-       keywords: Keywords.list_keywords()
+       user: user,
+       keywords: Keywords.list_keywords_by_user(user.id),
+       session_id: session["live_socket_id"]
      )
      |> allow_upload(:csv, accept: ~w(.csv), max_entries: 1)}
   end
@@ -26,16 +28,22 @@ defmodule GoogleScraperWeb.HomepageLive.Index do
       end)
       |> List.flatten()
 
-    results = Google.fetch_results(contents)
+    user_id = socket.assigns.user.id
+    results = GoogleScraper.fetch_results(contents, user_id)
 
-    Keywords.bulk_create_keywords(Keyword, results)
+    Keywords.bulk_create_keywords(GoogleScraper.Keywords.Keyword, results)
 
-    {:noreply, assign(socket, keywords: Keywords.list_keywords())}
+    {:noreply, assign(socket, keywords: Keywords.list_keywords_by_user(user_id))}
   end
 
   @impl Phoenix.LiveView
   def handle_event("search", _params = %{"keyword" => keyword}, socket) do
-    socket = assign(socket, keyword: keyword, keywords: Keywords.search_by_name(keyword))
+    socket =
+      assign(
+        socket,
+        keyword: keyword,
+        keywords: Keywords.search_by_name(keyword, socket.assigns.user.id)
+      )
 
     {:noreply, socket}
   end
@@ -51,5 +59,4 @@ defmodule GoogleScraperWeb.HomepageLive.Index do
     |> CSV.decode()
     |> Enum.map(fn {:ok, keyword} -> keyword end)
   end
-
 end
