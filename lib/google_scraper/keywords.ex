@@ -8,6 +8,11 @@ defmodule GoogleScraper.Keywords do
 
   alias GoogleScraper.Keywords.Keyword
 
+  def search_by_name(name) do
+    list_keywords()
+    |> Enum.filter(&(&1.name =~ name))
+  end
+
   @doc """
   Returns the list of keywords.
 

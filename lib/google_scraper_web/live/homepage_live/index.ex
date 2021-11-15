@@ -9,7 +9,10 @@ defmodule GoogleScraperWeb.HomepageLive.Index do
   def mount(_params, _session, socket) do
     {:ok,
      socket
-     |> assign(keywords: Keywords.list_keywords())
+     |> assign(
+       keyword: "",
+       keywords: Keywords.list_keywords()
+     )
      |> allow_upload(:csv, accept: ~w(.csv), max_entries: 1)}
   end
 
@@ -31,6 +34,13 @@ defmodule GoogleScraperWeb.HomepageLive.Index do
   end
 
   @impl Phoenix.LiveView
+  def handle_event("search", _params = %{"keyword" => keyword}, socket) do
+    socket = assign(socket, keyword: keyword, keywords: Keywords.search_by_name(keyword))
+
+    {:noreply, socket}
+  end
+
+  @impl Phoenix.LiveView
   def handle_event("validate", _params, socket) do
     {:noreply, socket}
   end
@@ -41,4 +51,5 @@ defmodule GoogleScraperWeb.HomepageLive.Index do
     |> CSV.decode()
     |> Enum.map(fn {:ok, keyword} -> keyword end)
   end
+
 end

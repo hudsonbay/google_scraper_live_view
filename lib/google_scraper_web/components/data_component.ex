@@ -5,7 +5,7 @@ defmodule DataComponent do
     ~H"""
     <div class="w-full md:w-2/3 p-6 flex flex-col flex-grow flex-shrink">
 
-      <%=live_component SearchComponent, id: :search, keywords: @keywords %>
+      <%=live_component SearchComponent, id: :search %>
 
           <table class="table-auto border border-collapse">
             <thead>
