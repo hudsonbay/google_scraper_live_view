@@ -4,6 +4,9 @@ defmodule DataComponent do
   def render(assigns) do
     ~H"""
     <div class="w-full md:w-2/3 p-6 flex flex-col flex-grow flex-shrink">
+
+      <%=live_component SearchComponent, id: :search, keywords: @keywords %>
+
           <table class="table-auto border border-collapse">
             <thead>
               <tr>
