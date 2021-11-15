@@ -1,4 +1,7 @@
 defmodule GoogleScraperWeb.HomepageLive.Index do
+  @moduledoc """
+  Module to handle main LiveView logic
+  """
   use GoogleScraperWeb, :live_view
 
   alias GoogleScraper.Keywords
@@ -37,7 +40,7 @@ defmodule GoogleScraperWeb.HomepageLive.Index do
   end
 
   @impl Phoenix.LiveView
-  def handle_event("search", _params = %{"keyword" => keyword}, socket) do
+  def handle_event("search", %{"keyword" => keyword} = _params, socket) do
     socket =
       assign(
         socket,
