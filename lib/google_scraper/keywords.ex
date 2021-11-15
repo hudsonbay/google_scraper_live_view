@@ -6,24 +6,18 @@ defmodule GoogleScraper.Keywords do
   import Ecto.Query, warn: false
   alias GoogleScraper.Repo
 
-  alias GoogleScraper.Keywords.Keyword
-
-  def search_by_name(name) do
-    list_keywords()
+  def search_by_name(name, user_id) do
+    list_keywords_by_user(user_id)
     |> Enum.filter(&(&1.name =~ name))
   end
 
-  @doc """
-  Returns the list of keywords.
+  def list_keywords_by_user(user_id) do
+    q =
+      from "keywords",
+        where: [user_id: ^user_id],
+        select: [:name, :total_advertisers, :total_links, :total_results]
 
-  ## Examples
-
-      iex> list_keywords()
-      [%Keyword{}, ...]
-
-  """
-  def list_keywords do
-    Repo.all(Keyword)
+    Repo.all(q)
   end
 
   def bulk_create_keywords(entity, attrs) do
