@@ -1,6 +1,6 @@
 defmodule GoogleScraper.Spider.Google do
   @base_url "https://www.google.com/search?q="
-  @max_sleep_time 10_000
+  @max_sleep_time 5_000
 
   def fetch_results(keyword_list) do
     Enum.map(keyword_list, fn keyword ->
