@@ -9,8 +9,8 @@
     <link phx-track-static rel="stylesheet" href={Routes.static_path(@conn, "/assets/app.css")}/>
     <script defer phx-track-static type="text/javascript" src={Routes.static_path(@conn, "/assets/app.js")}></script>
   </head>
-  <body class="gradient leading-relaxed tracking-wide flex flex-col">
-    <nav class="font-sans flex flex-col text-center sm:flex-row sm:text-left sm:justify-between py-4 px-6 bg-white shadow sm:items-baseline w-full">
+  <body>
+    <nav class="font-sans flex flex-col text-center sm:flex-row sm:text-right sm:justify-between py-4 px-6 bg-white shadow sm:items-baseline w-full">
       <%= render "_user_menu.html", assigns %>
     </nav>
     <%= @inner_content %>
