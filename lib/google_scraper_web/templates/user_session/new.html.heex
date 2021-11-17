@@ -1,49 +1,29 @@
 <div class="container mx-auto h-screen">
-  <div class="flex justify-center items-center mr-6 my-3">
     <div class="p-10 xs:p-0 mx-auto md:w-full md:max-w-md">
-      <h1 class="font-bold text-center text-2xl mb-5">Login</h1>
+        <h1 class="font-bold text-center text-2xl mb-5">Login</h1>
         <.form class let={f} for={@conn} action={Routes.user_session_path(@conn, :create)} as={:user}>
-          <%= if @error_message do %>
-            <div class="alert alert-danger">
-              <p>
-                <%= @error_message %>
-              </p>
-            </div>
-            <% end %>
-
-              <div class="bg-white shadow w-full rounded-lg divide-y divide-gray-200">
-                <div class="px-5 py-7">
-                  <%= label f, :email, class: "form-field-header-text" %>
-                    <%= email_input f, :email, required: true,
-                      class: "form-input-field" %>
-
-                      <%= label f, :password, class: "form-field-header-text" %>
-                        <%= password_input f, :password, required: true,
-                          class: "form-input-field" %>
-
-                          <%= submit "Log In" , phx_disable_with: "Saving..." ,
-                            class: "transition duration-200 bg-blue-500 hover:bg-blue-600 focus:bg-blue-700 focus:shadow-sm focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50 text-white w-full py-2.5 rounded-lg text-sm shadow-sm hover:shadow-md font-semibold text-center inline-block"
-                            %>
+            <%= if @error_message do %>
+                <div class="alert alert-danger">
+                    <p>
+                        <%= @error_message %>
+                    </p>
                 </div>
-                <div class="py-5">
-                  <div class="grid grid-cols-2 gap-1">
-                    <div class="text-center sm:text-left whitespace-nowrap">
-                      <button
-                        class="btn-primary">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                          class="w-4 h-4 inline-block align-text-top">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
-                        </svg>
-                        <%= label f, :remember_me, "Keep me logged in for 60 days" , class: "inline-block ml-1" %>
-                          <%= checkbox f, :remember_me %>
-                      </button>
+                <% end %>
+
+                    <div class="bg-white shadow w-full rounded-lg divide-y divide-gray-200">
+                        <div class="px-5 py-7">
+                            <%= label f, :email, class: "form-field-header-text" %>
+                                <%= email_input f, :email, required: true, class: "form-input-field" %>
+
+                                    <%= label f, :password, class: "form-field-header-text" %>
+                                        <%= password_input f, :password, required: true, class: "form-input-field" %>
+
+                                            <%= submit "Log In" , phx_disable_with: "Saving..." ,
+                                                class: "btn-primary"
+                                                %>
+                        </div>
                     </div>
-                  </div>
-                </div>
-              </div>
         </.form>
 
     </div>
-  </div>
 </div>

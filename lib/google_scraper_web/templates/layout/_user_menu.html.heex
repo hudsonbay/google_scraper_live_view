@@ -1,4 +1,4 @@
-<div class="mb-2 sm:mb-0">
+<div class="mb-2 sm:mb-0 right-0">
   <%= if @current_user do %>
     <b><%= @current_user.email %></b>
     <%= link "Log out", to: Routes.user_session_path(@conn, :delete), method: :delete, class: "text-lg no-underline text-grey-darkest hover:text-blue-dark ml-2" %>
