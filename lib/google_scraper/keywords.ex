@@ -26,7 +26,7 @@ defmodule GoogleScraper.Keywords do
     end
   end
 
-  def bulk_create_keywords(entity, attrs) do
+  def bulk_create_keywords(attrs, entity) do
     attrs
     |> Enum.map(fn entry ->
       entity.changeset(entity.__struct__(), entry)
@@ -56,6 +56,22 @@ defmodule GoogleScraper.Keywords do
           rows_affected: 0,
           errors: "Changes #{changes} couldn't be created because #{inspect(errors)}"
         }
+    end
+  end
+
+  @doc """
+  Finds if there's keywords that produced no results, which are tagged as nil.
+  Then removes them from the list and only inserts the keywords with results.
+  """
+  def maybe_insert_keywords(results) do
+    case Enum.member?(results, nil) do
+      false ->
+        bulk_create_keywords(results, GoogleScraper.Keywords.Keyword)
+
+      true ->
+        results
+        |> Enum.filter(&(&1 != nil))
+        |> bulk_create_keywords(GoogleScraper.Keywords.Keyword)
     end
   end
 end

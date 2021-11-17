@@ -36,9 +36,7 @@ defmodule GoogleScraperWeb.HomepageLive.Index do
 
     IO.inspect(results, label: "results")
 
-    if results != [nil] do
-      Keywords.bulk_create_keywords(GoogleScraper.Keywords.Keyword, results)
-    end
+    Keywords.maybe_insert_keywords(results)
 
     {:noreply, assign(socket, keywords: Keywords.list_keywords_by_user(user_id))}
   end
