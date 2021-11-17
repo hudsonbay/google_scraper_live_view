@@ -57,7 +57,6 @@ defmodule GoogleScraper do
 
     case total_results do
       "" ->
-        IO.puts("No results")
         nil
 
       _ ->
