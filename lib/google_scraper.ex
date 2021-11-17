@@ -55,13 +55,20 @@ defmodule GoogleScraper do
       |> Floki.attribute("href")
       |> Enum.count()
 
-    %{
-      html_content: "<h1>Hello</h1>",
-      total_results: total_results,
-      name: keyword,
-      total_links: total_links,
-      total_advertisers: 5,
-      user_id: user_id
-    }
+    case total_results do
+      "" ->
+        IO.puts("No results")
+        nil
+
+      _ ->
+        %{
+          html_content: "<h1>Hello</h1>",
+          total_results: total_results,
+          name: keyword,
+          total_links: total_links,
+          total_advertisers: 5,
+          user_id: user_id
+        }
+    end
   end
 end

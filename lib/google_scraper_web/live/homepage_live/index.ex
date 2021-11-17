@@ -34,7 +34,11 @@ defmodule GoogleScraperWeb.HomepageLive.Index do
     user_id = socket.assigns.user.id
     results = GoogleScraper.fetch_results(contents, user_id)
 
-    Keywords.bulk_create_keywords(GoogleScraper.Keywords.Keyword, results)
+    IO.inspect(results, label: "results")
+
+    if results != [nil] do
+      Keywords.bulk_create_keywords(GoogleScraper.Keywords.Keyword, results)
+    end
 
     {:noreply, assign(socket, keywords: Keywords.list_keywords_by_user(user_id))}
   end
