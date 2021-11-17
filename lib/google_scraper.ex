@@ -55,17 +55,25 @@ defmodule GoogleScraper do
       |> Floki.attribute("href")
       |> Enum.count()
 
+    html =
+      document
+      |> Floki.raw_html()
+      |> Codepagex.from_string!(:iso_8859_1, Codepagex.use_utf_replacement())
+      |> String.chunk(:printable)
+      |> Enum.filter(&String.printable?/1)
+      |> Enum.join()
+
     case total_results do
       "" ->
         nil
 
       _ ->
         %{
-          html_content: "<h1>Hello</h1>",
+          html_content: html,
           total_results: total_results,
           name: keyword,
           total_links: total_links,
-          total_advertisers: 5,
+          total_advertisers: 0,
           user_id: user_id
         }
     end
