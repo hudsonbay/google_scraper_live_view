@@ -1,4 +1,4 @@
-<div class="container mx-auto h-screen">
+<div class="container mx-auto h-screen overflow-hidden">
     <div class="p-10 xs:p-0 mx-auto md:w-full md:max-w-md">
         <h1 class="font-bold text-center text-2xl mb-5">Login</h1>
         <.form class let={f} for={@conn} action={Routes.user_session_path(@conn, :create)} as={:user}>
