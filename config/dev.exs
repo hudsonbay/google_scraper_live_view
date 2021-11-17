@@ -27,7 +27,7 @@ config :google_scraper, GoogleScraperWeb.Endpoint,
     esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]},
     npx: [
       "tailwindcss",
-      "--input=css/app.css",
+      "--input=css/app.scss",
       "--output=../priv/static/assets/app.css",
       "--postcss",
       "--watch",

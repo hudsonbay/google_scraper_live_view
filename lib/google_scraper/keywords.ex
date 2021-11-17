@@ -12,12 +12,18 @@ defmodule GoogleScraper.Keywords do
   end
 
   def list_keywords_by_user(user_id) do
-    q =
-      from "keywords",
-        where: [user_id: ^user_id],
-        select: [:name, :total_advertisers, :total_links, :total_results]
+    case user_id do
+      nil ->
+        []
 
-    Repo.all(q)
+      _ ->
+        q =
+          from "keywords",
+            where: [user_id: ^user_id],
+            select: [:name, :total_advertisers, :total_links, :total_results]
+
+        Repo.all(q)
+    end
   end
 
   def bulk_create_keywords(entity, attrs) do
