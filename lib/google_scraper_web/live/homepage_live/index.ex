@@ -56,13 +56,19 @@ defmodule GoogleScraperWeb.HomepageLive.Index do
 
   @impl Phoenix.LiveView
   def handle_info({:fetch_from_google, contents}, socket) do
-    user_id = socket.assigns.user.id
-    results = GoogleScraper.fetch_results(contents, user_id)
+    if Enum.count(contents) < 100 do
+      user_id = socket.assigns.user.id
 
-    IO.inspect(results, label: "results")
+      contents
+      |> GoogleScraper.fetch_results(user_id)
+      |> Keywords.maybe_insert_keywords()
 
-    Keywords.maybe_insert_keywords(results)
-    {:noreply, assign(socket, loading: false, keywords: Keywords.list_keywords_by_user(user_id))}
+      {:noreply,
+       assign(socket, loading: false, keywords: Keywords.list_keywords_by_user(user_id))}
+    else
+      IO.puts("LARGER THAN 100")
+      {:noreply, assign(socket, loading: false)}
+    end
   end
 
   defp read_csv(file) do
