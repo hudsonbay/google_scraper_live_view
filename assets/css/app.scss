@@ -8,11 +8,11 @@
 
 @layer components {
   .btn-primary {
-    @apply transition duration-200 bg-blue-500 hover:bg-blue-600 focus:bg-blue-700 focus:shadow-sm focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50 text-white w-full py-2.5 rounded-lg text-sm shadow-sm hover:shadow-md font-semibold text-center inline-block
+    @apply transition duration-200 bg-blue-500 hover:bg-blue-600 focus:bg-blue-700 focus:shadow-sm focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50 text-white w-full py-2.5 rounded-lg text-sm shadow-sm hover:shadow-md font-semibold text-center inline-block;
   }
 
   .btn-secondary {
-    @apply transition duration-200 mx-5 px-5 py-4 cursor-pointer font-normal text-sm rounded-lg text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-200 focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 ring-inset
+    @apply transition duration-200 mx-5 px-5 py-4 cursor-pointer font-normal text-sm rounded-lg text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-200 focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 ring-inset;
   }
 
   .btn-upload {
@@ -28,9 +28,12 @@
   }
 
   .leading-text {
-    @apply leading-normal text-gray-800 text-base md:text-xl lg:text-2xl mb-8
+    @apply leading-normal text-gray-800 text-base md:text-xl lg:text-2xl mb-8;
   }
 
+  .table-header-column-title {
+    @apply px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider
+  }
 }
 /* Alerts and form errors used by phx.new */
 .alert {
@@ -66,5 +69,26 @@
   margin: -1rem 0 2rem;
 }
 
+@keyframes spinner {
+  0% {
+    transform: translate3d(-50%, -50%, 0) rotate(0deg);
+  }
 
+  100% {
+    transform: translate3d(-50%, -50%, 0) rotate(360deg);
+  }
+}
 
+.spin::before {
+  animation: 1.5s linear infinite spinner;
+  animation-play-state: inherit;
+  border: solid 5px #cfd0d1;
+  border-bottom-color: #1c87c9;
+  border-radius: 50%;
+  content: "";
+  height: 50px;
+  width: 50px;
+  position: absolute;
+  transform: translate3d(-50%, -50%, 0);
+  will-change: transform;
+}
