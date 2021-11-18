@@ -3,22 +3,35 @@ defmodule GoogleScraper.KeywordsFixtures do
   This module defines test helpers for creating
   entities via the `GoogleScraper.Keywords` context.
   """
+  alias GoogleScraper.AccountsFixtures
+  alias GoogleScraper.Keywords.Keyword, as: K
+  alias GoogleScraper.Keywords
 
   @doc """
   Generate a keyword.
   """
-  def keyword_fixture(attrs \\ %{}) do
-    {:ok, keyword} =
-      attrs
-      |> Enum.into(%{
-        html_content: "some html_content",
-        name: "some name",
-        total_advertisers: 42,
-        total_links: 42,
-        total_results: 42
-      })
-      |> GoogleScraper.Keywords.create_keyword()
+  def keyword_fixture() do
+    user = AccountsFixtures.user_fixture()
 
-    keyword
+    keyword = [
+      %{
+        html_content: "h1",
+        total_advertisers: 5,
+        total_links: 88,
+        total_results: "About 19,300,000 results (0.58 seconds)",
+        name: "dell xps",
+        user_id: user.id
+      }
+    ]
+
+    Keywords.bulk_create_keywords(keyword, K)
+
+    {user.id,
+     %{
+       total_advertisers: 5,
+       total_links: 88,
+       total_results: "About 19,300,000 results (0.58 seconds)",
+       name: "dell xps"
+     }}
   end
 end
