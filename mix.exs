@@ -54,7 +54,8 @@ defmodule GoogleScraper.MixProject do
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
       {:mix_test_watch, "~> 1.0", only: :dev, runtime: false},
       {:crawly, "~> 0.13.0"},
-      {:codepagex, "~> 0.1.6"}
+      {:codepagex, "~> 0.1.6"},
+      {:ex_machina, "~> 2.7.0", only: :test}
     ]
   end
 
