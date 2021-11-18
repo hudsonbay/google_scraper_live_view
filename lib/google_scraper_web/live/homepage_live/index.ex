@@ -15,6 +15,7 @@ defmodule GoogleScraperWeb.HomepageLive.Index do
      |> assign(
        keyword: "",
        user: user,
+       loading: false,
        keywords: Keywords.list_keywords_by_user(user.id),
        session_id: session["live_socket_id"]
      )
@@ -31,14 +32,9 @@ defmodule GoogleScraperWeb.HomepageLive.Index do
       end)
       |> List.flatten()
 
-    user_id = socket.assigns.user.id
-    results = GoogleScraper.fetch_results(contents, user_id)
+    send(self(), {:fetch_from_google, contents})
 
-    IO.inspect(results, label: "results")
-
-    Keywords.maybe_insert_keywords(results)
-
-    {:noreply, assign(socket, keywords: Keywords.list_keywords_by_user(user_id))}
+    {:noreply, assign(socket, loading: true)}
   end
 
   @impl Phoenix.LiveView
@@ -56,6 +52,17 @@ defmodule GoogleScraperWeb.HomepageLive.Index do
   @impl Phoenix.LiveView
   def handle_event("validate", _params, socket) do
     {:noreply, socket}
+  end
+
+  @impl Phoenix.LiveView
+  def handle_info({:fetch_from_google, contents}, socket) do
+    user_id = socket.assigns.user.id
+    results = GoogleScraper.fetch_results(contents, user_id)
+
+    IO.inspect(results, label: "results")
+
+    Keywords.maybe_insert_keywords(results)
+    {:noreply, assign(socket, loading: false, keywords: Keywords.list_keywords_by_user(user_id))}
   end
 
   defp read_csv(file) do
