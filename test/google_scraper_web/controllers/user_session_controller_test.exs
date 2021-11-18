@@ -11,9 +11,7 @@ defmodule GoogleScraperWeb.UserSessionControllerTest do
     test "renders log in page", %{conn: conn} do
       conn = get(conn, Routes.user_session_path(conn, :new))
       response = html_response(conn, 200)
-      assert response =~ "<h1>Log in</h1>"
-      assert response =~ "Register</a>"
-      assert response =~ "Forgot your password?</a>"
+      assert response =~ "<h1 class=\"font-bold text-center text-2xl mb-5\">Login</h1>"
     end
 
     test "redirects if already logged in", %{conn: conn, user: user} do
@@ -36,7 +34,6 @@ defmodule GoogleScraperWeb.UserSessionControllerTest do
       conn = get(conn, "/")
       response = html_response(conn, 200)
       assert response =~ user.email
-      assert response =~ "Settings</a>"
       assert response =~ "Log out</a>"
     end
 
@@ -75,7 +72,7 @@ defmodule GoogleScraperWeb.UserSessionControllerTest do
         })
 
       response = html_response(conn, 200)
-      assert response =~ "<h1>Log in</h1>"
+      assert response =~ "<h1 class=\"font-bold text-center text-2xl mb-5\">Login</h1>"
       assert response =~ "Invalid email or password"
     end
   end
@@ -85,14 +82,12 @@ defmodule GoogleScraperWeb.UserSessionControllerTest do
       conn = conn |> log_in_user(user) |> delete(Routes.user_session_path(conn, :delete))
       assert redirected_to(conn) == "/"
       refute get_session(conn, :user_token)
-      assert get_flash(conn, :info) =~ "Logged out successfully"
     end
 
     test "succeeds even if the user is not logged in", %{conn: conn} do
       conn = delete(conn, Routes.user_session_path(conn, :delete))
       assert redirected_to(conn) == "/"
       refute get_session(conn, :user_token)
-      assert get_flash(conn, :info) =~ "Logged out successfully"
     end
   end
 end

@@ -7,7 +7,7 @@ defmodule GoogleScraperWeb.UserRegistrationControllerTest do
     test "renders registration page", %{conn: conn} do
       conn = get(conn, Routes.user_registration_path(conn, :new))
       response = html_response(conn, 200)
-      assert response =~ "<h1>Register</h1>"
+      assert response =~ "<h1 class=\"font-bold text-center text-2xl mb-5\">Register</h1>"
       assert response =~ "Log in</a>"
       assert response =~ "Register</a>"
     end
@@ -35,7 +35,6 @@ defmodule GoogleScraperWeb.UserRegistrationControllerTest do
       conn = get(conn, "/")
       response = html_response(conn, 200)
       assert response =~ email
-      assert response =~ "Settings</a>"
       assert response =~ "Log out</a>"
     end
 
@@ -46,7 +45,7 @@ defmodule GoogleScraperWeb.UserRegistrationControllerTest do
         })
 
       response = html_response(conn, 200)
-      assert response =~ "<h1>Register</h1>"
+      assert response =~ "<h1 class=\"font-bold text-center text-2xl mb-5\">Register</h1>"
       assert response =~ "must have the @ sign and no spaces"
       assert response =~ "should be at least 12 character"
     end
