@@ -5,6 +5,10 @@ defmodule GoogleScraper.Keywords do
 
   import Ecto.Query, warn: false
   alias GoogleScraper.Repo
+  alias GoogleScraper.Keywords.Keyword, as: K
+
+  @topic "keyword_list"
+  @pubsub GoogleScraper.PubSub
 
   def search_by_name(name, user_id) do
     list_keywords_by_user(user_id)
@@ -26,52 +30,36 @@ defmodule GoogleScraper.Keywords do
     end
   end
 
-  def bulk_create_keywords(attrs, entity) do
-    attrs
-    |> Enum.map(fn entry ->
-      entity.changeset(entity.__struct__(), entry)
-    end)
-    |> Enum.with_index()
-    |> Enum.reduce(
-      Ecto.Multi.new(),
-      fn {changeset, index}, multi ->
-        Ecto.Multi.insert(multi, Integer.to_string(index), changeset, on_conflict: :nothing)
-      end
-    )
-    |> Repo.transaction()
-    |> case do
-      {:ok, _} ->
-        %{rows_affected: length(attrs), errors: []}
-
-      {
-        :error,
-        _,
-        %Ecto.Changeset{
-          changes: changes,
-          errors: errors
-        },
-        _
-      } ->
-        %{
-          rows_affected: 0,
-          errors: "Changes #{changes} couldn't be created because #{inspect(errors)}"
-        }
-    end
+  @doc """
+  Creates a keyword.
+  """
+  def create_keyword(attrs \\ %{}) do
+    %K{}
+    |> K.changeset(attrs)
+    |> Repo.insert()
+    |> broadcast(:keyword_created)
   end
 
-  @doc """
-  Finds if there's keywords that produced no results, which are tagged as nil.
-  Then removes them from the list and only inserts the keywords with results.
-  """
-  def maybe_insert_keywords(results) do
-    case Enum.member?(results, nil) do
-      false ->
-        bulk_create_keywords(results, GoogleScraper.Keywords.Keyword)
+  def broadcast({:error, _c} = error, _event), do: error
 
-      true ->
-        results
-        |> Enum.filter(&(&1 != nil))
-        |> bulk_create_keywords(GoogleScraper.Keywords.Keyword)
+  def broadcast({:ok, keyword}, event) do
+    Phoenix.PubSub.broadcast(
+      @pubsub,
+      @topic,
+      {event, keyword}
+    )
+
+    {:ok, keyword}
+  end
+
+  def subscribe, do: Phoenix.PubSub.subscribe(@pubsub, @topic, link: true)
+
+  @doc """
+  Validates keyword insertion only if it's non-null
+  """
+  def maybe_insert_keyword(keyword) do
+    if keyword != nil do
+      create_keyword(keyword)
     end
   end
 end
