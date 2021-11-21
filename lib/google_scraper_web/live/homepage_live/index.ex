@@ -6,6 +6,8 @@ defmodule GoogleScraperWeb.HomepageLive.Index do
 
   alias GoogleScraper.Keywords
 
+  @keyword_limit 100
+
   @impl Phoenix.LiveView
   def mount(_params, session, socket) do
     user = GoogleScraper.Accounts.get_user_by_session_token(session["user_token"])
@@ -58,7 +60,7 @@ defmodule GoogleScraperWeb.HomepageLive.Index do
 
   @impl Phoenix.LiveView
   def handle_info({:fetch_from_google, contents}, socket) do
-    if Enum.count(contents) < 100 do
+    if Enum.count(contents) < @keyword_limit do
       user_id = socket.assigns.user.id
       view = self()
 
