@@ -66,7 +66,7 @@ defmodule GoogleScraperWeb.HomepageLive.Index do
 
       Task.start(fn ->
         GoogleScraper.fetch_results(contents, user_id)
-        send(view, :fetch_from_api_complete)
+        send(view, :fetch_from_google_complete)
       end)
 
       {:noreply, socket}
@@ -76,7 +76,7 @@ defmodule GoogleScraperWeb.HomepageLive.Index do
     end
   end
 
-  def handle_info(:fetch_from_api_complete, socket) do
+  def handle_info(:fetch_from_google_complete, socket) do
     {:noreply, assign(socket, loading: false)}
   end
 
