@@ -20,6 +20,7 @@ defmodule GoogleScraperWeb.HomepageLive.Index do
        keyword: "",
        user: user,
        loading: false,
+       error_message: "",
        keywords: Keywords.list_keywords_by_user(user.id),
        session_id: session["live_socket_id"]
      })
@@ -38,7 +39,7 @@ defmodule GoogleScraperWeb.HomepageLive.Index do
 
     send(self(), {:fetch_from_google, contents})
 
-    {:noreply, assign(socket, loading: true)}
+    {:noreply, assign(socket, loading: true, error_message: "")}
   end
 
   @impl Phoenix.LiveView
@@ -71,8 +72,11 @@ defmodule GoogleScraperWeb.HomepageLive.Index do
 
       {:noreply, socket}
     else
-      IO.puts("LARGER THAN 100")
-      {:noreply, assign(socket, loading: false)}
+      socket =
+        socket
+        |> assign(loading: false, error_message: "Your CSV file has more than 100 keywords")
+
+      {:noreply, socket}
     end
   end
 
