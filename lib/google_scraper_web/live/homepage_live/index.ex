@@ -6,8 +6,6 @@ defmodule GoogleScraperWeb.HomepageLive.Index do
 
   alias GoogleScraper.Keywords
 
-  @keyword_limit 100
-
   @impl Phoenix.LiveView
   def mount(_params, session, socket) do
     user = GoogleScraper.Accounts.get_user_by_session_token(session["user_token"])
@@ -29,17 +27,25 @@ defmodule GoogleScraperWeb.HomepageLive.Index do
 
   @impl Phoenix.LiveView
   def handle_event("save", _params, socket) do
-    contents =
+    csv_file =
       consume_uploaded_entries(socket, :csv, fn meta, entry ->
         dest = Path.join("priv/static/uploads", "#{entry.uuid}.csv")
         File.cp!(meta.path, dest)
-        read_csv(dest)
+        dest
       end)
-      |> List.flatten()
 
-    send(self(), {:fetch_from_google, contents})
+    case CSVOperations.provide_valid_csv(csv_file) do
+      %{"csv" => content, "errors" => []} ->
+        send(self(), {:fetch_from_google, content})
+        {:noreply, assign(socket, loading: true, error_message: "")}
 
-    {:noreply, assign(socket, loading: true, error_message: "")}
+      %{"errors" => errors} ->
+        socket =
+          socket
+          |> assign(loading: false, error_message: CSVOperations.format_csv_errors(errors))
+
+        {:noreply, socket}
+    end
   end
 
   @impl Phoenix.LiveView
@@ -61,23 +67,15 @@ defmodule GoogleScraperWeb.HomepageLive.Index do
 
   @impl Phoenix.LiveView
   def handle_info({:fetch_from_google, contents}, socket) do
-    if Enum.count(contents) < @keyword_limit do
-      user_id = socket.assigns.user.id
-      view = self()
+    user_id = socket.assigns.user.id
+    view = self()
 
-      Task.start(fn ->
-        GoogleScraper.fetch_results(contents, user_id)
-        send(view, :fetch_from_google_complete)
-      end)
+    Task.start(fn ->
+      GoogleScraper.fetch_results(contents, user_id)
+      send(view, :fetch_from_google_complete)
+    end)
 
-      {:noreply, socket}
-    else
-      socket =
-        socket
-        |> assign(loading: false, error_message: "Your CSV file has more than 100 keywords")
-
-      {:noreply, socket}
-    end
+    {:noreply, socket}
   end
 
   def handle_info(:fetch_from_google_complete, socket) do
@@ -112,12 +110,5 @@ defmodule GoogleScraperWeb.HomepageLive.Index do
        ]
        |> List.flatten()
      end)}
-  end
-
-  defp read_csv(file) do
-    file
-    |> File.stream!()
-    |> CSV.decode()
-    |> Enum.map(fn {:ok, keyword} -> keyword end)
   end
 end
