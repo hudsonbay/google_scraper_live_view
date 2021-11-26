@@ -3,12 +3,12 @@
         <h1 class="font-bold text-center text-2xl mb-5">Login</h1>
         <.form class let={f} for={@conn} action={Routes.user_session_path(@conn, :create)} as={:user}>
             <%= if @error_message do %>
-                <div class="alert alert-danger">
-                    <p>
-                        <%= @error_message %>
-                    </p>
+                <div class="notification-red" role="alert">
+                    <strong class="font-bold">Error!</strong>
+                    <span class="block sm:inline"><%= @error_message %></span>
                 </div>
-                <% end %>
+            <% end %>
+
 
                     <div class="bg-white shadow w-full rounded-lg divide-y divide-gray-200">
                         <div class="px-5 py-7">

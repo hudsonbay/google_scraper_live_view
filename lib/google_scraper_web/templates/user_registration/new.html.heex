@@ -3,10 +3,12 @@
     <h1 class="font-bold text-center text-2xl mb-5">Register</h1>
       <.form let={f} for={@changeset} action={Routes.user_registration_path(@conn, :create)}>
         <%= if @changeset.action do %>
-          <div class="alert alert-danger">
-            <p>Oops, something went wrong! Please check the errors below.</p>
+          <div class="notification-red" role="alert">
+              <strong class="font-bold">Oops, something went wrong!</strong>
+              <span class="block sm:inline">Please check the errors below.</span>
           </div>
           <% end %>
+
 
             <div class="bg-white shadow w-full rounded-lg divide-y divide-gray-200">
               <div class="px-5 py-7">
