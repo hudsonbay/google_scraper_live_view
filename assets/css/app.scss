@@ -32,6 +32,10 @@
   .table-header-column-title {
     @apply px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider
   }
+
+  .notification-red {
+    @apply bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative;
+  }
 }
 /* Alerts and form errors used by phx.new */
 .alert {

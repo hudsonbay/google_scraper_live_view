@@ -6,22 +6,27 @@ defmodule GoogleScraper do
   Contexts are also responsible for managing your data, regardless
   if it comes from the database, an external API or others.
   """
+  alias GoogleScraper.Keywords
 
   @base_url "https://www.google.com/search?q="
-  @max_sleep_time 5_000
+  @max_sleep_time 3_000
 
-  def fetch_results(keyword_list, user_id) do
-    Enum.map(keyword_list, fn keyword ->
-      @max_sleep_time
-      |> :rand.uniform()
-      |> Process.sleep()
+  def fetch_results(keywords, user_id) do
+    IO.puts("Start fetching data...")
+    Enum.each(keywords, fn keyword -> fetch_result(keyword, user_id) end)
+  end
 
-      IO.puts("fetching #{keyword} from Google...")
+  def fetch_result(keyword, user_id) do
+    @max_sleep_time
+    |> :rand.uniform()
+    |> Process.sleep()
 
-      keyword
-      |> scrap(user_id)
-      |> build_keyword_map()
-    end)
+    IO.puts("fetching #{keyword} from Google...")
+
+    keyword
+    |> scrap(user_id)
+    |> build_keyword_map()
+    |> Keywords.maybe_insert_keyword()
   end
 
   def scrap(keyword, user_id) do

@@ -10,31 +10,42 @@ defmodule GoogleScraperWeb.HomepageLive.Index do
   def mount(_params, session, socket) do
     user = GoogleScraper.Accounts.get_user_by_session_token(session["user_token"])
 
+    if(connected?(socket), do: Keywords.subscribe())
+
     {:ok,
      socket
-     |> assign(
+     |> assign(%{
        keyword: "",
        user: user,
        loading: false,
+       error_message: "",
        keywords: Keywords.list_keywords_by_user(user.id),
        session_id: session["live_socket_id"]
-     )
+     })
      |> allow_upload(:csv, accept: ~w(.csv), max_entries: 1)}
   end
 
   @impl Phoenix.LiveView
   def handle_event("save", _params, socket) do
-    contents =
+    csv_file =
       consume_uploaded_entries(socket, :csv, fn meta, entry ->
         dest = Path.join("priv/static/uploads", "#{entry.uuid}.csv")
         File.cp!(meta.path, dest)
-        read_csv(dest)
+        dest
       end)
-      |> List.flatten()
 
-    send(self(), {:fetch_from_google, contents})
+    case CSVOperations.provide_valid_csv(csv_file) do
+      %{"csv" => content, "errors" => []} ->
+        send(self(), {:fetch_from_google, content})
+        {:noreply, assign(socket, loading: true, error_message: "")}
 
-    {:noreply, assign(socket, loading: true)}
+      %{"errors" => errors} ->
+        socket =
+          socket
+          |> assign(loading: false, error_message: CSVOperations.format_csv_errors(errors))
+
+        {:noreply, socket}
+    end
   end
 
   @impl Phoenix.LiveView
@@ -56,25 +67,48 @@ defmodule GoogleScraperWeb.HomepageLive.Index do
 
   @impl Phoenix.LiveView
   def handle_info({:fetch_from_google, contents}, socket) do
-    if Enum.count(contents) < 100 do
-      user_id = socket.assigns.user.id
+    user_id = socket.assigns.user.id
+    view = self()
 
-      contents
-      |> GoogleScraper.fetch_results(user_id)
-      |> Keywords.maybe_insert_keywords()
+    Task.start(fn ->
+      GoogleScraper.fetch_results(contents, user_id)
+      send(view, :fetch_from_google_complete)
+    end)
 
-      {:noreply,
-       assign(socket, loading: false, keywords: Keywords.list_keywords_by_user(user_id))}
-    else
-      IO.puts("LARGER THAN 100")
-      {:noreply, assign(socket, loading: false)}
-    end
+    {:noreply, socket}
   end
 
-  defp read_csv(file) do
-    file
-    |> File.stream!()
-    |> CSV.decode()
-    |> Enum.map(fn {:ok, keyword} -> keyword end)
+  def handle_info(:fetch_from_google_complete, socket) do
+    {:noreply, assign(socket, loading: false)}
+  end
+
+  @impl Phoenix.LiveView
+  def handle_info(
+        {:keyword_created,
+         %{
+           name: name,
+           total_advertisers: total_advertisers,
+           total_links: total_links,
+           total_results: total_results,
+           user_id: user_id
+         }},
+        socket
+      ) do
+    {:noreply,
+     update(socket, :keywords, fn keywords ->
+       [
+         keywords
+         | [
+             %{
+               name: name,
+               total_advertisers: total_advertisers,
+               total_links: total_links,
+               total_results: total_results,
+               user_id: user_id
+             }
+           ]
+       ]
+       |> List.flatten()
+     end)}
   end
 end
